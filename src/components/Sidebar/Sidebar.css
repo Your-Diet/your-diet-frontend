@@ -1,0 +1,22 @@
+.menu-item {
+  border-radius: 8px;
+  margin: 4px 8px;
+  padding: 0 8px;
+}
+
+.menu-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.menu-item.Mui-selected {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.menu-item.Mui-selected .MuiListItemIcon-root {
+  color: #1976d2;
+}
+
+.menu-item .MuiListItemIcon-root {
+  min-width: 40px;
+}

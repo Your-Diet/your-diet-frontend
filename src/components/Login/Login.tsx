@@ -45,7 +45,7 @@ const Login: React.FC = () => {
     if (emailError) return;
     
     try {
-      const response = await fetch('http://localhost:8080/v1/users/login', {
+      const response = await fetch(`${import.meta.env.VITE_API_HOST}/v1/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

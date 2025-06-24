@@ -24,7 +24,7 @@ const DietListPage: React.FC = () => {
         }
 
         const { token } = JSON.parse(authData);
-        const response = await fetch('http://localhost:8080/v1/diets', {
+        const response = await fetch(`${import.meta.env.VITE_API_HOST}/v1/diets`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -71,39 +71,57 @@ const DietListPage: React.FC = () => {
       <Typography variant="h4" component="h1" gutterBottom>
         Minhas Dietas
       </Typography>
-      <List>
-        {diets.map((diet) => (
-          <ListItem 
-            key={diet.id}
-            disablePadding
-            sx={{
-              mb: 2,
-              borderRadius: 1,
-              boxShadow: 1,
-              '&:hover': {
-                boxShadow: 3,
-              },
-            }}
-          >
-            <ListItemButton 
-              component="a"
-              href={`/dietas/${diet.id}`}
-              onClick={(e) => {
-                e.preventDefault();
-                navigate(`/dietas/${diet.id}`, { state: { diet } });
-              }}
+      {diets == null || diets.length === 0 ? (
+        <Box 
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '200px',
+            border: '1px dashed',
+            borderColor: 'divider',
+            borderRadius: 1,
+          }}
+        >
+          <Typography variant="h6" color="textSecondary">
+            Sem itens.
+          </Typography>
+        </Box>
+      ) : (
+        <List>
+          {diets.map((diet) => (
+            <ListItem 
+              key={diet.id}
+              disablePadding
               sx={{
+                mb: 2,
                 borderRadius: 1,
+                boxShadow: 1,
                 '&:hover': {
-                  bgcolor: 'action.hover',
+                  boxShadow: 3,
                 },
               }}
             >
-              <ListItemText primary={diet.name} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+              <ListItemButton 
+                component="a"
+                href={`/dietas/${diet.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/dietas/${diet.id}`, { state: { diet } });
+                }}
+                sx={{
+                  borderRadius: 1,
+                  '&:hover': {
+                    bgcolor: 'action.hover',
+                  },
+                }}
+              >
+                <ListItemText primary={diet.name} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      )}
     </Container>
   );
 };

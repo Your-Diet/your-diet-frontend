@@ -134,7 +134,7 @@ const RegisterForm: React.FC = () => {
       };
       
       // Make the API call
-      const response = await fetch('http://localhost:8080/v1/users', {
+      const response = await fetch('https://your-diet-prod-26110891251.us-central1.run.app/v1/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
