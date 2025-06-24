@@ -18,6 +18,8 @@ steps:
       - $_DEPLOY_REGION
       - '--platform'
       - $_PLATFORM
+      - '--port'
+      - 80
     entrypoint: gcloud
 
 images:
