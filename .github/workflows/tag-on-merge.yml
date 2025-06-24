@@ -2,7 +2,7 @@ name: Bump version
 
 on:
   workflow_run:
-    workflows: ["Build Backend"]
+    workflows: ["Build Frontend"]
     types:
       - completed
 
