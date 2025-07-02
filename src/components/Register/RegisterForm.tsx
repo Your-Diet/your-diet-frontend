@@ -16,6 +16,8 @@ import {
   Link,
   InputAdornment,
   IconButton,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -38,6 +40,7 @@ const RegisterForm: React.FC = () => {
     confirmPassword: '',
     age: '',
     gender: '',
+    is_nutritionist: false,
   });
 
   // Form errors
@@ -48,10 +51,14 @@ const RegisterForm: React.FC = () => {
 
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    let fieldValue: string | boolean = value;
+    if (type === 'checkbox') {
+      fieldValue = (e.target as HTMLInputElement).checked;
+    }
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: fieldValue
     }));
     
     // Clear error when user types
@@ -131,10 +138,11 @@ const RegisterForm: React.FC = () => {
         password: formData.password,
         age: Number(formData.age),
         gender: formData.gender,
+        is_nutritionist: formData.is_nutritionist,
       };
       
       // Make the API call
-      const response = await fetch('https://your-diet-prod-26110891251.us-central1.run.app/v1/users', {
+      const response = await fetch(`${import.meta.env.VITE_API_HOST}/v1/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -295,6 +303,19 @@ const RegisterForm: React.FC = () => {
                 {errors.gender && <FormHelperText>{errors.gender}</FormHelperText>}
               </FormControl>
             </Box>
+            
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData.is_nutritionist}
+                  onChange={handleChange}
+                  name="is_nutritionist"
+                  color="primary"
+                />
+              }
+              label="Você é nutricionista?"
+              sx={{ mb: 2 }}
+            />
             
             <Box sx={{ mt: 3, mb: 2, textAlign: 'center' }}>
               <Button

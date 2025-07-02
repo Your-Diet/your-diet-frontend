@@ -2,11 +2,13 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { theme } from './theme/theme';
 import { SnackbarProvider } from './contexts/SnackbarContext';
+import { SidebarProvider } from './contexts/SidebarContext';
 import { isAuthenticated } from './utils/auth';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DietListPage from './pages/DietListPage';
 import DietDetailPage from './pages/DietDetailPage';
+import CreateDietPage from './pages/CreateDietPage';
 import MainLayout from './components/Layout/MainLayout';
 
 const PrivateRoute = () => {
@@ -28,7 +30,8 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <SnackbarProvider>
-        <Router>
+        <SidebarProvider>
+          <Router>
           <Routes>
             {/* Public routes */}
             <Route element={<PublicRoute />}>
@@ -40,14 +43,15 @@ function App() {
             <Route element={<PrivateRoute />}>
               <Route path="/" element={<DietListPage />} />
               <Route path="/dietas" element={<DietListPage />} />
-              <Route path="/dietas/novo" element={<div>Nova Dieta</div>} />
+              <Route path="/dietas/novo" element={<CreateDietPage />} />
               <Route path="/dietas/:dietId" element={<DietDetailPage />} />
             </Route>
             
             {/* Redirect any unknown routes to home */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
-        </Router>
+          </Router>
+        </SidebarProvider>
       </SnackbarProvider>
     </ThemeProvider>
   );

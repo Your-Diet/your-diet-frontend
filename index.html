@@ -1,12 +1,63 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/your_diet.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Your Diet</title>
+    
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos globais -->
+    <style>
+      /* Animações suaves para transições de página */
+      .page-enter {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      .page-enter-active {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 300ms, transform 300ms;
+      }
+      .page-exit {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .page-exit-active {
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: opacity 300ms, transform 300ms;
+      }
+      
+      /* Scrollbar personalizada */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+      }
+      
+      /* Seleção de texto personalizada */
+      ::selection {
+        background: rgba(46, 125, 50, 0.2);
+        color: #2E7D32;
+      }
+    </style>
   </head>
-  <body>
+  <body style="margin: 0; padding: 0; min-height: 100vh; background-color: #F5F5F5;">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
