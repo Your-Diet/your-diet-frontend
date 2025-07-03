@@ -2,10 +2,17 @@ import { getToken } from './auth';
 
 export interface SSEEvent {
   type: string;
-  data: any;
+  payload: {
+    name: string;
+    description: string;
+    [key: string]: any;
+  };
 }
 
+let instance: SSEClient | null = null;
+
 export class SSEClient {
+  private static instance: SSEClient | null = null;
   private controller: AbortController | null = null;
   private url: string;
   private listeners: Map<string, Function[]> = new Map();
@@ -14,8 +21,15 @@ export class SSEClient {
   private maxRetryAttempts: number = 5;
   public isConnected: boolean = false;
 
-  constructor(url: string) {
+  private constructor(url: string) {
     this.url = url;
+  }
+
+  public static getInstance(): SSEClient {
+    if (!SSEClient.instance) {
+      SSEClient.instance = new SSEClient('http://localhost:8080/v1/sse/events');
+    }
+    return SSEClient.instance;
   }
 
 
@@ -91,8 +105,6 @@ export class SSEClient {
                 const event = JSON.parse(eventData);
                 console.log('Received SSE event:', event);
                 this.triggerEvent(event.type, event.payload);
-              } else {
-                console.log('Received non-data line:', line.trim());
               }
             } catch (error) {
               console.error('Error parsing SSE data:', error);
@@ -133,8 +145,10 @@ export class SSEClient {
 
   private triggerEvent(type: string, payload: any): void {
     const callbacks = this.listeners.get(type) || [];
-    const event: SSEEvent = { type, data: payload };
+
+    const event: SSEEvent = { type, payload };
     callbacks.forEach(callback => callback(event));
+    
     console.log('Triggering event:', { type, payload });
   }
 

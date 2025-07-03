@@ -82,7 +82,7 @@ export const initSSEConnection = (): void => {
   if (isAuthenticated()) {
     const token = getToken();
     if (token) {
-      sseClient = new SSEClient('http://localhost:8080/v1/sse/events');
+      sseClient = SSEClient.getInstance();
       sseClient.connect();
     }
   }

@@ -4,13 +4,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-
 import { theme } from './theme/theme';
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import { SidebarProvider } from './contexts/SidebarContext';
-import { initSSEConnection, isAuthenticated } from './utils/auth';
+import { isAuthenticated, initSSEConnection } from './utils/auth';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DietListPage from './pages/DietListPage';
 import DietDetailPage from './pages/DietDetailPage';
 import CreateDietPage from './pages/CreateDietPage';
 import MainLayout from './components/Layout/MainLayout';
+import { InAppNotification } from './components/Notification/InAppNotification';
 
 const PrivateRoute = () => {
   return isAuthenticated() ? (
@@ -44,21 +45,21 @@ function App() {
       <CssBaseline />
       <SnackbarProvider>
         <SidebarProvider>
-            <Router>
-              <Routes>
-                {/* Public routes */}
-                <Route element={<PublicRoute />}>
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                </Route>
-                
-                {/* Protected routes with layout */}
-                <Route element={<PrivateRoute />}>
-                  <Route path="/" element={<DietListPage />} />
-                  <Route path="/dietas" element={<DietListPage />} />
-                  <Route path="/dietas/novo" element={<CreateDietPage />} />
-                  <Route path="/dietas/:dietId" element={<DietDetailPage />} />
-                </Route>
+          <InAppNotification />
+          <Router>
+            <Routes>
+              {/* Public routes */}
+              <Route element={<PublicRoute />}>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+              </Route>
+              {/* Protected routes with layout */}
+              <Route element={<PrivateRoute />}>
+                <Route path="/" element={<DietListPage />} />
+                <Route path="/dietas" element={<DietListPage />} />
+                <Route path="/dietas/novo" element={<CreateDietPage />} />
+                <Route path="/dietas/:dietId" element={<DietDetailPage />} />
+              </Route>
                 
                 {/* Redirect any unknown routes to home */}
                 <Route path="*" element={<Navigate to="/" replace />} />
