@@ -74,7 +74,25 @@ export const hasPermission = (requiredPermission: string): boolean => {
   return hasPerm;
 };
 
+import { SSEClient } from './sse';
+
+let sseClient: SSEClient | null = null;
+
+export const initSSEConnection = (): void => {
+  if (isAuthenticated()) {
+    const token = getToken();
+    if (token) {
+      sseClient = new SSEClient('http://localhost:8080/v1/sse/events');
+      sseClient.connect();
+    }
+  }
+};
+
 export const logout = (): void => {
+  if (sseClient) {
+    sseClient.disconnect();
+    sseClient = null;
+  }
   localStorage.removeItem('authData');
   // Force a page reload to clear any application state
   window.location.href = '/';

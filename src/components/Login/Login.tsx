@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Login.css';
 import { 
   Box, 
@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { initSSEConnection } from '../../utils/auth';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -64,6 +65,9 @@ const Login: React.FC = () => {
       
       // Armazenar os dados de autenticação no localStorage
       localStorage.setItem('authData', JSON.stringify(data));
+      
+      // Iniciar conexão SSE
+      initSSEConnection();
       
       console.log('Login successful:', data);
       navigate('/dietas');
