@@ -1,6 +1,6 @@
 import { getToken } from '../utils/auth';
 
-const API_BASE_URL = import.meta.env.VITE_API_HOST || 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_HOST;
 
 interface ApiResponse<T> {
   data?: T;

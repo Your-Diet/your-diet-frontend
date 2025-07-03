@@ -1,15 +1,7 @@
-import { getToken } from './auth';
+import type { SSEEvent } from '../types/event';
+import { getToken, isAuthenticated } from '../utils/auth';
 
-export interface SSEEvent {
-  type: string;
-  payload: {
-    name: string;
-    description: string;
-    [key: string]: any;
-  };
-}
-
-let instance: SSEClient | null = null;
+const API_BASE_URL = import.meta.env.VITE_API_HOST;
 
 export class SSEClient {
   private static instance: SSEClient | null = null;
@@ -27,11 +19,20 @@ export class SSEClient {
 
   public static getInstance(): SSEClient {
     if (!SSEClient.instance) {
-      SSEClient.instance = new SSEClient('http://localhost:8080/v1/sse/events');
+      SSEClient.instance = new SSEClient(`${API_BASE_URL}/v1/sse/events`);
     }
     return SSEClient.instance;
   }
 
+  public static initSSEConnection = (): void => {
+    if (isAuthenticated()) {
+      const token = getToken();
+      if (token) {
+        var client = this.getInstance();
+        client.connect();
+      }
+    }
+  };
 
   private createHeaders(): Headers {
     const headers = new Headers();

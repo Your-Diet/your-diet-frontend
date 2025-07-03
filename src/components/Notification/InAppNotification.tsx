@@ -1,25 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box, Alert, IconButton, Slide } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { SSEClient } from '../../utils/sse';
+import { SSEClient } from '../../services/sse';
 
-export const InAppNotification: React.FC = () => {
-  const [open, setOpen] = useState(false);
+type NotificationPayload = {
+  name: string;
+  description: string;
+  [key: string]: any;
+};
+
+interface InAppNotificationProps {
+  autoCloseDelay?: number;
+}
+
+export const InAppNotification: React.FC<InAppNotificationProps> = ({ autoCloseDelay = 3000 }) => {
+  const [notification, setNotification] = useState<NotificationPayload | null>(null);
+
+  const handleSSEEvent = useCallback((event: { payload: NotificationPayload }) => {
+    setNotification(event.payload);
+    const timer = setTimeout(() => setNotification(null), autoCloseDelay);
+    return () => clearTimeout(timer);
+  }, [autoCloseDelay]);
 
   useEffect(() => {
-    const sseClient = SSEClient.getInstance();    
+    const sseClient = SSEClient.getInstance();
     
     if (sseClient) {
-      sseClient.on('in_app_notification', (event) => {
-        const { payload } = event;
-        setTitle(payload.name);
-        setDescription(payload.description);
-        setOpen(true);
-        // Fecha a notificação após 3 segundos
-        setTimeout(() => {
-          setOpen(false);
-        }, 3000);
-      });
+      sseClient.on('in_app_notification', handleSSEEvent);
     }
 
     return () => {
@@ -27,13 +34,10 @@ export const InAppNotification: React.FC = () => {
         sseClient.disconnect();
       }
     };
-  }, []);
-
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  }, [handleSSEEvent]);
 
   const handleClose = () => {
-    setOpen(false);
+    setNotification(null);
   };
 
   return (
@@ -46,31 +50,29 @@ export const InAppNotification: React.FC = () => {
         width: '300px',
       }}
     >
-      <Slide direction="right" in={open}>
+      <Slide direction="right" in={!!notification}>
         <Alert
           severity="info"
           action={
             <IconButton
+              aria-label="close"
+              color="inherit"
               size="small"
               onClick={handleClose}
               sx={{ ml: 1 }}
             >
-              <CloseIcon fontSize="inherit" />
+              <CloseIcon fontSize="small" />
             </IconButton>
           }
-          sx={{
-            borderRadius: 2,
-            boxShadow: 2,
-            backgroundColor: 'background.paper',
-            color: 'text.primary',
-          }}
+          sx={{ mb: 2 }}
         >
-          <div>
-            <div style={{ fontWeight: 'bold', marginBottom: 4 }}>{title}</div>
-            <div>{description}</div>
-          </div>
+          <strong>{notification?.name}</strong>
+          <br />
+          {notification?.description}
         </Alert>
       </Slide>
     </Box>
   );
 };
+
+export default InAppNotification;

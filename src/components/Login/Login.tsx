@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { initSSEConnection } from '../../utils/auth';
+import { SSEClient } from '../../services/sse';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -67,7 +67,7 @@ const Login: React.FC = () => {
       localStorage.setItem('authData', JSON.stringify(data));
       
       // Iniciar conexão SSE
-      initSSEConnection();
+      SSEClient.initSSEConnection();
       
       console.log('Login successful:', data);
       navigate('/dietas');

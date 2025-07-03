@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-
 import { theme } from './theme/theme';
 import { SnackbarProvider } from './contexts/SnackbarContext';
 import { SidebarProvider } from './contexts/SidebarContext';
-import { isAuthenticated, initSSEConnection } from './utils/auth';
+import { isAuthenticated } from './utils/auth';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DietListPage from './pages/DietListPage';
@@ -12,6 +12,7 @@ import DietDetailPage from './pages/DietDetailPage';
 import CreateDietPage from './pages/CreateDietPage';
 import MainLayout from './components/Layout/MainLayout';
 import { InAppNotification } from './components/Notification/InAppNotification';
+import { SSEClient } from './services/sse';
 
 const PrivateRoute = () => {
   return isAuthenticated() ? (
@@ -34,7 +35,7 @@ function App() {
   // Inicia a verificação automática do SSE apenas uma vez
   useEffect(() => {
     if (!isSSEInitialized.current) {
-      initSSEConnection();
+      SSEClient.initSSEConnection();
       isSSEInitialized.current = true;
     }
     console.log("batata")

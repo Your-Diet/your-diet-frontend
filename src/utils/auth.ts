@@ -1,8 +1,5 @@
-interface TokenPayload {
-  permissions?: string[];
-  exp?: number;
-  [key: string]: any;
-}
+import { SSEClient } from "../services/sse";
+import type { TokenPayload } from "../types/token";
 
 export const getToken = (): string | null => {
   const authData = localStorage.getItem('authData');
@@ -20,7 +17,6 @@ export const isAuthenticated = (): boolean => {
   const payload = getDecodedToken();
   if (!payload) return false;
   
-  // Verificar se o token expirou
   if (payload.exp && typeof payload.exp === 'number') {
     const isExpired = payload.exp * 1000 < Date.now();
     if (isExpired) {
@@ -74,26 +70,8 @@ export const hasPermission = (requiredPermission: string): boolean => {
   return hasPerm;
 };
 
-import { SSEClient } from './sse';
-
-let sseClient: SSEClient | null = null;
-
-export const initSSEConnection = (): void => {
-  if (isAuthenticated()) {
-    const token = getToken();
-    if (token) {
-      sseClient = SSEClient.getInstance();
-      sseClient.connect();
-    }
-  }
-};
-
 export const logout = (): void => {
-  if (sseClient) {
-    sseClient.disconnect();
-    sseClient = null;
-  }
+  SSEClient.getInstance().disconnect();
   localStorage.removeItem('authData');
-  // Force a page reload to clear any application state
   window.location.href = '/';
 };
