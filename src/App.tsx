@@ -1,5 +1,4 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { theme } from './theme/theme';
 import { SnackbarProvider } from './contexts/SnackbarContext';
@@ -11,8 +10,6 @@ import DietListPage from './pages/DietListPage';
 import DietDetailPage from './pages/DietDetailPage';
 import CreateDietPage from './pages/CreateDietPage';
 import MainLayout from './components/Layout/MainLayout';
-import { InAppNotification } from './components/Notification/InAppNotification';
-import { SSEClient } from './services/sse';
 
 const PrivateRoute = () => {
   return isAuthenticated() ? (
@@ -29,24 +26,11 @@ const PublicRoute = () => {
 };
 
 function App() {
-  // Referência para controlar se o SSE já foi inicializado
-  const isSSEInitialized = useRef(false);
-
-  // Inicia a verificação automática do SSE apenas uma vez
-  useEffect(() => {
-    if (!isSSEInitialized.current) {
-      SSEClient.initSSEConnection();
-      isSSEInitialized.current = true;
-    }
-    console.log("batata")
-  }, []); // O array vazio garante que só será executado uma vez
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <SnackbarProvider>
         <SidebarProvider>
-          <InAppNotification />
           <Router>
             <Routes>
               {/* Public routes */}
