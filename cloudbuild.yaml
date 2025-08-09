@@ -1,0 +1,45 @@
+steps:
+  # Get the latest git tag
+  - name: 'gcr.io/cloud-builders/git'
+    id: Get Git Tag
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        git fetch --tags
+        git describe --tags --abbrev=0 --always > /workspace/version
+
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Build
+    entrypoint: bash
+    args:
+      - '-c'
+      - 'docker build -t gcr.io/$PROJECT_ID/your-diet-frontend:$(cat /workspace/version) -t gcr.io/$PROJECT_ID/your-diet-frontend:latest .'
+
+  # Push the Docker image to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: Push
+    entrypoint: bash
+    args:
+      - '-c'
+      - 'docker push gcr.io/$PROJECT_ID/your-diet-frontend:$(cat /workspace/version) && docker push gcr.io/$PROJECT_ID/your-diet-frontend:latest'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: Deploy
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - $_SERVICE_NAME
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/your-diet-frontend:latest'
+      - '--region'
+      - $_DEPLOY_REGION
+      - '--platform'
+      - '$_PLATFORM'
+
+
+options:
+  logging: CLOUD_LOGGING_ONLY

@@ -1,4 +1,3 @@
-import { SSEClient } from "../services/sse";
 import type { TokenPayload } from "../types/token";
 
 export const getToken = (): string | null => {
@@ -71,7 +70,6 @@ export const hasPermission = (requiredPermission: string): boolean => {
 };
 
 export const logout = (): void => {
-  SSEClient.getInstance().disconnect();
   localStorage.removeItem('authData');
   window.location.href = '/';
 };
